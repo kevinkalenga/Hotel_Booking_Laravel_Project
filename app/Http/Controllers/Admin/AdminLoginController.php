@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Mail\Websitemail;
 use Auth;
 use Hash;
 use App\Models\Admin;
