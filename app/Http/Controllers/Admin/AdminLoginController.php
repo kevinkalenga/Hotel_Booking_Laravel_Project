@@ -5,111 +5,124 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Mail\Websitemail;
-use Auth;
-use Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Admin;
 
 class AdminLoginController extends Controller
 {
-    
+    /* -------------------- Page de connexion -------------------- */
     public function index()
     {
-        // $pass = Hash::make('12345678');
-        // dd($pass);
         return view('admin.login');
     }
+
+    /* -------------------- Page mot de passe oublié -------------------- */
     public function forget_password()
     {
         return view('admin.forget_password');
     }
 
+    /* -------------------- Soumission du formulaire de mot de passe oublié -------------------- */
     public function forget_password_submit(Request $request)
     {
+        // Validation du formulaire
         $request->validate([
-            'email' => 'required|email'
+            'email' => ['required', 'email'],
         ]);
 
-        
-        $admin_data = Admin::where('email',$request->email)->first();
-        if(!$admin_data) {
-          return redirect()->back()->with('error','Email is not found');
+        // Récupérer l'admin
+        $admin_data = Admin::where('email', $request->email)->first();
+
+        if (!$admin_data) {
+            return back()->with('error', 'Email not found.');
         }
 
-           $token = hash('sha256',time());
-           $admin_data->token = $token;
-           $admin_data->update();
-           $reset_link = url('admin/reset-password/'.$token.'/'.$request->email);
-           $subject = "Password Reset";
-           $message = "To reset password, please click on the link below:<br>";
-           $message .= "<a href='".$reset_link."'>Click Here</a>";
+        // Générer un token sécurisé (32 octets aléatoires convertis en hexadécimal)
+        $token = bin2hex(random_bytes(32));
 
-           \Mail::to($request->email)->send(new Websitemail($subject,$message));
+        // Mettre à jour le token directement
+        $admin_data->update(['token' => $token]);
 
-            // return redirect()->back()->with('success','We have sent a password reset link to your email. Please check your email. If you do not find the email in your inbox, please check your spam folder.');
-            return redirect()->route('admin_login')->with('success','Please check your email and follow the steps there.');
+        // Créer le lien de réinitialisation
+        $reset_link = url('admin/reset-password/' . $token . '/' . $request->email);
+
+        // Message et sujet de l'email
+        $subject = "Password Reset Request";
+        $message = "To reset your password, please click on the link below:<br>";
+        $message .= "<a href='" . $reset_link . "'>Click Here</a>";
+
+        // Envoyer l'email
+        \Mail::to($request->email)->send(new Websitemail($subject, $message));
+
+        // Retourner avec un message de succès
+        return redirect()->route('admin_login')
+            ->with('success', 'Please check your email and follow the link to reset your password.');
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+    /* -------------------- Soumission du formulaire de connexion -------------------- */
     public function login_submit(Request $request)
     {
         $request->validate([
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ]);
-        
-        // if everything is okey, i get my fields
-        $credential = [
+
+        $credentials = [
             'email' => $request->email,
-            'password' => $request->password
+            'password' => $request->password,
         ];
 
-        // i use my auth guard which is admin
-        if(Auth::guard('admin')->attempt($credential)) {
+        if (Auth::guard('admin')->attempt($credentials)) {
             return redirect()->route('admin_home');
         } else {
-            return redirect()->route('admin_login')->with('error', 'Information is not correct!');
+            return back()->with('error', 'Incorrect email or password.');
         }
     }
 
+    /* -------------------- Déconnexion -------------------- */
     public function logout()
     {
         Auth::guard('admin')->logout();
         return redirect()->route('admin_login');
     }
 
-
-    public function reset_password($token, $email) 
+    /* -------------------- Page de réinitialisation de mot de passe -------------------- */
+    public function reset_password($token, $email)
     {
-         $admin_data = Admin::where('email',$email)->where('token',$token)->first();
-         if(!$admin_data) {
-             return redirect()->route('admin_login')->with('error','Token or email is not correct');
-         }
-          return view('admin.reset-password', compact('token','email'));
-        
-       
+        $admin_data = Admin::where('email', $email)
+            ->where('token', $token)
+            ->first();
+
+        if (!$admin_data) {
+            return redirect()->route('admin_login')->with('error', 'Invalid token or email.');
+        }
+
+        return view('admin.reset-password', compact('token', 'email'));
     }
 
-
+    /* -------------------- Soumission du formulaire de réinitialisation -------------------- */
     public function reset_password_submit(Request $request, $token, $email)
     {
-      $request->validate([
-        'password' => ['required'],
-        'retype_password' => ['required','same:password'],
-      ]);
+        $request->validate([
+            'password' => ['required', 'min:6'],
+            'retype_password' => ['required', 'same:password'],
+        ]);
 
-     $admin_data = Admin::where('email',$request->email)->where('token',$request->token)->first();
-    
-      $admin_data->password = Hash::make($request->password);
-      $admin_data->token = "";
-      $admin_data->update();
+        $admin_data = Admin::where('email', $email)
+            ->where('token', $token)
+            ->first();
 
-      return redirect()->route('admin_login')->with('success','Password reset is successful. You can login now.');
+        if (!$admin_data) {
+            return redirect()->route('admin_login')->with('error', 'Invalid token or email.');
+        }
+
+        // Réinitialiser le mot de passe
+        $admin_data->update([
+            'password' => Hash::make($request->password),
+            'token' => null,
+        ]);
+
+        return redirect()->route('admin_login')->with('success', 'Password reset successfully. You can now log in.');
     }
 }

@@ -30,8 +30,7 @@
                             <div class="card-body card-body-auth">
                                 <form method="POST" action="{{route('admin_reset_password_submit', [$token, $email])}}">
                                      @csrf
-                                      <input type="hidden" name="email" value="{{ $email }}">
-                                      <input type="hidden" name="token" value="{{ $token }}">
+                                     
                                     <div class="form-group">
                                         <input type="password" class="form-control @error('password') is-invalid
                                          @enderror" name="password" placeholder="Password" autofocus>
@@ -53,6 +52,8 @@
                                         
                                     </div>
                                     <div class="form-group">
+                                        <input type="hidden" name="email" value="{{ $email }}">
+                                        <input type="hidden" name="token" value="{{ $token }}">
                                         <button type="submit" class="btn btn-primary btn-lg btn-block">
                                             Update
                                         </button>
