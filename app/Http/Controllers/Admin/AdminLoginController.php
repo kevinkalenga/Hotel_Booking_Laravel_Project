@@ -83,4 +83,33 @@ class AdminLoginController extends Controller
         Auth::guard('admin')->logout();
         return redirect()->route('admin_login');
     }
+
+
+    public function reset_password($token, $email) 
+    {
+         $admin_data = Admin::where('email',$email)->where('token',$token)->first();
+         if(!$admin_data) {
+             return redirect()->route('admin_login')->with('error','Token or email is not correct');
+         }
+          return view('admin.reset-password', compact('token','email'));
+        
+       
+    }
+
+
+    public function reset_password_submit(Request $request, $token, $email)
+    {
+      $request->validate([
+        'password' => ['required'],
+        'retype_password' => ['required','same:password'],
+      ]);
+
+     $admin_data = Admin::where('email',$request->email)->where('token',$request->token)->first();
+    
+      $admin_data->password = Hash::make($request->password);
+      $admin_data->token = "";
+      $admin_data->update();
+
+      return redirect()->route('admin_login')->with('success','Password reset is successful. You can login now.');
+    }
 }
