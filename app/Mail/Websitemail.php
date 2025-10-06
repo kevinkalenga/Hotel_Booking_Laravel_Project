@@ -39,9 +39,10 @@ class Websitemail extends Mailable
     public function content(): Content
     {
         return new Content(
-            $this->view('email.email')->with([
-                'subject' => $this->subject
-            ])
+            view: 'email.email', // <- ici tu mets simplement le nom de ta vue
+            with: [
+            'subject' => $this->subject,
+          ],
         );
     }
 
