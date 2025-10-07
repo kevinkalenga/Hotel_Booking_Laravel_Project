@@ -37,7 +37,10 @@
                                                 </div>
                                                 <div class="mb-4">
                                                     <label class="form-label">Text</label>
-                                                    <input type="text" class="form-control" name="text" value="{{ old('text', $slide_data->text) }}">
+                                                    
+                                                    <textarea name="text" class="form-control h_100" cols="30" rows="10">
+                                                        {{$slide_data->text}}
+                                                    </textarea>
                                                 </div>
                                                 <div class="mb-4">
                                                     <label class="form-label">Button Text</label>

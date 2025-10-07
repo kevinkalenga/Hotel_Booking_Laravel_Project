@@ -4,7 +4,27 @@
 
         <div class="slider">
             <div class="slide-carousel owl-carousel">
-                <div class="item" style="background-image:url(uploads/slide1.jpg);">
+
+
+                 @foreach($slide_all as $item)
+            
+                  <div class="item" style="background-image:url({{asset('uploads/'.$item->photo)}});">
+                    <div class="bg"></div>
+                    <div class="text">
+                        <h2>{{$item->heading}}</h2>
+                        <p>
+                            {!! $item->text !!}
+                        </p>
+                        
+                        @if($item->button_text != '')
+                          <div class="button">
+                            <a href="{{$item->button_url}}">{{$item->button_text}}</a>
+                          </div>
+                        @endif
+                    </div>
+                   </div>
+                @endforeach
+                <!-- <div class="item" style="background-image:url(uploads/slide1.jpg);">
                     <div class="bg"></div>
                     <div class="text">
                         <h2>Best Hotel in the City</h2>
@@ -27,7 +47,7 @@
                             <a href="">Read More</a>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
              <div class="search-section">
