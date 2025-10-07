@@ -26,14 +26,14 @@
                                             <tbody>
                                               @foreach($slides as $row)
                                                 <tr>
-                                                    <td>1</td>
+                                                    <td>{{$loop->iteration}}</td>
                                                     <td>
                                                         <img src="{{asset('uploads/'.$row->photo)}}" alt="" class="w_200">
                                                     </td>
                                                     
                                                     <td class="pt_10 pb_10">
                                                         
-                                                        <a href="" class="btn btn-primary"><i class="fas fa-edit"></i></a>
+                                                        <a href="{{route('admin_slide_edit', $row->id)}}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
                                                         <a href="" class="btn btn-danger" onClick="return confirm('Are you sure?');"><i class="fas fa-trash"></i></a>
                                                     </td>
                                                    
