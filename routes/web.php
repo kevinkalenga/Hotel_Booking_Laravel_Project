@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminHomeController;
 use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\Admin\AdminProfilController;
+use App\Http\Controllers\Admin\AdminSlideController;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\AboutController;
 
@@ -42,3 +43,6 @@ Route::middleware('admin:admin')->group(function () {
     Route::get('/admin/edit-profile', [AdminProfilController::class, 'index'])->name('admin_profile');
     Route::post('/admin/edit-profile-submit', [AdminProfilController::class, 'profile_submit'])->name('admin_profile_submit');
 });
+
+// Slide
+Route::get('/admin/slide/view', [AdminSlideController::class, 'index'])->name('admin_slide_view')->middleware('admin:admin');
