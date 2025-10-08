@@ -2569,8 +2569,8 @@ body.sidebar-mini .main-sidebar {
         padding: 0 20px;
         background-color: #fff; }
         body.sidebar-mini .main-sidebar .sidebar-menu > li ul.dropdown-menu li a.has-dropdown:after {
-          content: "";
-          font-family: 'Font Awesome 5 Free';
+          content: "\f105";
+          font-family: 'FontAwesome';
           font-weight: 900;
           position: absolute;
           top: 50%;

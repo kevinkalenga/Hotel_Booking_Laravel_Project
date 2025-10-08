@@ -406,3 +406,8 @@ hr.invoice-above-table {
 .tox .tox-notification {
     display: none !important;
 }
+
+.card.card-statistic-1 .card-icon {
+    color: #fff;
+    font-size: 30px;
+}
