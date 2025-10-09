@@ -1,9 +1,9 @@
 @extends('admin.layout.app')
 
-@section('heading', 'Slide Edit')
+@section('heading', 'Edit Feature')
 
 @section('right_top_button')
-  <a href="{{route('admin_slide_view')}}" class="btn btn-primary"><i class="fa fa-plus"></i>View All</a>
+  <a href="{{route('admin_feature_view')}}" class="btn btn-primary"><i class="fa fa-plus"></i>View All</a>
 @endsection
 
 @section('main_content')
@@ -13,43 +13,34 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-body">
-                                    <form action="{{route('admin_slide_update', $slide_data->id)}}" method="post"enctype="multipart/form-data">
+                                    <form action="{{route('admin_feature_update', $feature_data->id)}}" method="post">
                                         @csrf
                                         <div class="row">
                                             
                                             <div class="col-md-12">
                                                 <div class="mb-4">
-                                                    <label class="form-label">Existing Photo </label>
+                                                    <label class="form-label">Existing Icon</label>
                                                     <div>
-                                                       <img class="w_200" src="{{ asset('uploads/' . $slide_data->photo) }}" alt="">
-
+                                                       <i class="{{$feature_data->icon}}"></i>
                                                     </div>
                                                 </div>
                                                 <div class="mb-4">
-                                                    <label class="form-label">Change Photo </label>
-                                                    <div>
-                                                        <input type="file" name="photo">
-                                                    </div>
+                                                    <label class="form-label">Icon</label>
+                                                    <input type="text" class="form-control" name="icon" value="{{ old('icon', $feature_data->icon) }}">
                                                 </div>
+                                               
                                                 <div class="mb-4">
                                                     <label class="form-label">Heading</label>
-                                                    <input type="text" class="form-control" name="heading" value="{{ old('heading', $slide_data->heading) }}">
+                                                    <input type="text" class="form-control" name="heading" value="{{ old('heading', $feature_data->heading) }}">
                                                 </div>
                                                 <div class="mb-4">
                                                     <label class="form-label">Text</label>
                                                     
                                                     <textarea name="text" class="form-control h_100" cols="30" rows="10">
-                                                        {{$slide_data->text}}
+                                                        {{$feature_data->text}}
                                                     </textarea>
                                                 </div>
-                                                <div class="mb-4">
-                                                    <label class="form-label">Button Text</label>
-                                                    <input type="text" class="form-control" name="button_text" value="{{ old('button_text', $slide_data->button_text) }}">
-                                                </div>
-                                                <div class="mb-4">
-                                                    <label class="form-label">Button URL</label>
-                                                    <input type="text" class="form-control" name="button_url" value="{{ old('button_url', $slide_data->button_url) }}">
-                                                </div>
+                                                
                                                 
                                                 <div class="mb-4">
                                                     <label class="form-label"></label>
