@@ -20,6 +20,8 @@
                                                 <tr>
                                                     <th>SL</th>
                                                     <th>Photo</th>
+                                                    <th>Name</th>
+                                                    <th>Designation</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -28,9 +30,10 @@
                                                 <tr>
                                                     <td>{{$loop->iteration}}</td>
                                                     <td>
-                                                        <img src="{{asset('uploads/'.$row->photo)}}" alt="" class="w_200">
+                                                        <img src="{{asset('uploads/'.$row->photo)}}" alt="" class="w_100">
                                                     </td>
-                                                    
+                                                    <td>{{$row->name}}</td>
+                                                    <td>{{$row->designation}}</td>
                                                     <td class="pt_10 pb_10">
                                                         
                                                         <a href="{{route('admin_testimonial_edit', $row->id)}}" class="btn btn-primary"><i class="fa fa-edit"></i></a>
