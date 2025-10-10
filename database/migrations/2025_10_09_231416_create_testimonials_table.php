@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('testimonials', function (Blueprint $table) {
             $table->id();
-            $table->text('photo');
+            $table->text('photo')->nullable();
             $table->text('name');
             $table->text('designation');
             $table->text('comment');
