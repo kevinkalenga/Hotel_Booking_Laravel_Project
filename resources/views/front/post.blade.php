@@ -34,7 +34,7 @@
                             </div>
                             <div class="item">
                                 <b><i class="fa fa-eye"></i></b>
-                                234
+                                {{$single_post_data->total_view}}
                             </div>
                         </div>
                         <div class="main-text">
