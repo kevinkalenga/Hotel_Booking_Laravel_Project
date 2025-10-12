@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\AdminPostController;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\BlogController;
 use App\Http\Controllers\Front\AboutController;
+use App\Http\Controllers\Front\PhotoController;
 
 
 
@@ -23,6 +24,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/blog', [BlogController::class, 'index'])->name('blog');
 Route::get('/post/{id}', [BlogController::class, 'single_post'])->name('post');
+Route::get('/photo-gallery', [PhotoController::class, 'index'])->name('photo_gallery');
 
 
 /* ---------------------- Admin ---------------------- */
