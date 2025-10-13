@@ -29,10 +29,10 @@
                                                 <tr>
                                                     <td>{{$loop->iteration}}</td>
                                                     <td>
-                                                       {{$row->question}}
+                                                       {!!$row->question !!}
                                                     </td>
                                                     <td>
-                                                        {{ $row->answer }}
+                                                        {!! $row->answer !!}
                                                     </td>
                                                     
                                                     <td class="pt_10 pb_10">
