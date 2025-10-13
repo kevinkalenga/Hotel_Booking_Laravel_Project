@@ -411,3 +411,8 @@ hr.invoice-above-table {
     color: #fff;
     font-size: 30px;
 }
+
+.iframe-container1 iframe {
+    width: 250px;
+    height: 180px;
+}
