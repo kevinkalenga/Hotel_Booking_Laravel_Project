@@ -34,7 +34,7 @@
                     <div class="col-md-6 left-side">
                         <ul>
                             <li class="phone-text">111-222-3333</li>
-                            <li class="email-text">contact@arefindev.com</li>
+                            <li class="email-text">contact@kevindev.com</li>
                         </ul>
                     </div>
                     <div class="col-md-6 right-side">
@@ -143,7 +143,7 @@
                                 <li><a href="index.html">Home</a></li>
                                 <li><a href="terms.html">Terms and Conditions</a></li>
                                 <li><a href="privacy.html">Privacy Policy</a></li>
-                                <li><a href="disclaimer.html">Disclaimer</a></li>
+                                <li><a href="{{route('faq')}}">FAQ</a></li>
                             </ul>
                         </div>
                     </div>
@@ -166,7 +166,7 @@
                                     <i class="fa fa-volume-control-phone"></i>
                                 </div>
                                 <div class="right">
-                                    contact@arefindev.com
+                                    contact@kevindev.com
                                 </div>
                             </div>
                             <div class="list-item">
