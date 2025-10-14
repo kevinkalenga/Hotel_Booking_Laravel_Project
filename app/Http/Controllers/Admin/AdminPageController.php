@@ -19,6 +19,7 @@ class AdminPageController extends Controller
 
         $obj->about_heading = $request->about_heading;
         $obj->about_content = $request->about_content;
+        $obj->about_status = $request->about_status;
         $obj->save();
 
         return redirect()->back()->with('success', 'Data is updated successfully');

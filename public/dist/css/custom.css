@@ -416,3 +416,7 @@ hr.invoice-above-table {
     width: 250px;
     height: 180px;
 }
+
+html::-webkit-scrollbar {
+  display: none;
+}

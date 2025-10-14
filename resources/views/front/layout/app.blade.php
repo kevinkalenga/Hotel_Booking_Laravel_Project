@@ -71,9 +71,13 @@
                                 <li class="nav-item">
                                     <a href="{{route('home')}}" class="nav-link">Home</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a href="{{route('about')}}" class="nav-link">About</a>
-                                </li>
+                                @if($global_page_data->about_status == 1)
+                                  <li class="nav-item">
+                                    <a href="{{route('about')}}" class="nav-link">
+                                       {{$global_page_data->about_heading}}
+                                    </a>
+                                   </li>
+                                @endif
                                 <li class="nav-item">
                                     <a href="javascript:void;" class="nav-link dropdown-toggle">Room & Suite</a>
                                     <ul class="dropdown-menu">
@@ -140,7 +144,7 @@
                         <div class="item">
                             <h2 class="heading">Useful Links</h2>
                             <ul class="useful-links">
-                                <li><a href="index.html">Home</a></li>
+                                <li><a href="{{route('home')}}">Home</a></li>
                                 <li><a href="terms.html">Terms and Conditions</a></li>
                                 <li><a href="privacy.html">Privacy Policy</a></li>
                                 <li><a href="{{route('faq')}}">FAQ</a></li>

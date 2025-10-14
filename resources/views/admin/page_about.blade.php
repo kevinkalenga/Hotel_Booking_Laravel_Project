@@ -28,6 +28,15 @@
                                                     </textarea>
                                                     
                                                 </div>
+
+                                                <div class="mb-4">
+                                                    <label class="form-label">Status *</label>
+                                                    <select name="about_status" class="form-control">
+                                                        <option value="1" @if($page_data->about_status == 1) selected @endif>Show</option>
+                                                        <option value="0"  @if($page_data->about_status == 0) selected @endif>Hide</option>
+                                                    </select>
+                                                   
+                                                </div>
                                                 
                                                 
                                                 <div class="mb-4">
