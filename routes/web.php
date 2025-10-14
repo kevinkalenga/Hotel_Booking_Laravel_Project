@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AdminVideoController;
 use App\Http\Controllers\Admin\AdminTestimonialController;
 use App\Http\Controllers\Admin\AdminPostController;
 use App\Http\Controllers\Admin\AdminFaqController;
+use App\Http\Controllers\Admin\AdminPageController;
 
 
 use App\Http\Controllers\Front\HomeController;
@@ -110,3 +111,7 @@ Route::post('/admin/post/store', [AdminPostController::class, 'store'])->name('a
 Route::get('/admin/post/edit/{id}', [AdminPostController::class, 'edit'])->name('admin_post_edit')->middleware('admin:admin');
 Route::post('/admin/post/edit/{id}', [AdminPostController::class, 'update'])->name('admin_post_update')->middleware('admin:admin');
 Route::get('/admin/post/delete/{id}', [AdminPostController::class, 'delete'])->name('admin_post_delete')->middleware('admin:admin');
+
+// About Page
+Route::get('/admin/page/about', [AdminPageController::class, 'about'])->name('admin_page_about')->middleware('admin:admin');
+Route::post('/admin/page/about/update', [AdminPageController::class, 'about_update'])->name('admin_page_about_update')->middleware('admin:admin');
