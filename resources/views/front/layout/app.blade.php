@@ -136,7 +136,7 @@
                                 <li><a href="{{route('photo_gallery')}}">Photo Gallery</a></li>
                                 <li><a href="{{route('video_gallery')}}">Video Gallery</a></li>
                                 <li><a href="{{route('blog')}}">Blog</a></li>
-                                <li><a href="contact.html">Contact</a></li>
+                                <li><a href="{{route('admin_page_contact')}}">Contact</a></li>
                             </ul>
                         </div>
                     </div>
