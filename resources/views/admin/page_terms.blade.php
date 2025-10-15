@@ -1,6 +1,6 @@
 @extends('admin.layout.app')
 
-@section('heading', 'Edit About Page')
+@section('heading', 'Edit Terms and Conditions Page')
 
 @section('main_content')
 
@@ -18,22 +18,22 @@
                                                 
                                                 <div class="mb-4">
                                                     <label class="form-label">Heading *</label>
-                                                    <input type="text" class="form-control" name="about_heading" value="{{ $page_data->about_heading }}">
+                                                    <input type="text" class="form-control" name="terms_heading" value="{{ $page_data->terms_heading }}">
                                                 </div>
                                                 
                                                 <div class="mb-4">
                                                     <label class="form-label">Content *</label>
-                                                    <textarea name="about_content" cols="30" rows="10" class="form-control snote">
-                                                         {{ $page_data->about_content }}
+                                                    <textarea name="terms_content" cols="30" rows="10" class="form-control snote">
+                                                         {{ $page_data->terms_content }}
                                                     </textarea>
                                                     
                                                 </div>
 
                                                 <div class="mb-4">
                                                     <label class="form-label">Status *</label>
-                                                    <select name="about_status" class="form-control">
-                                                        <option value="1" @if($page_data->about_status == 1) selected @endif>Show</option>
-                                                        <option value="0"  @if($page_data->about_status == 0) selected @endif>Hide</option>
+                                                    <select name="terms_status" class="form-control">
+                                                        <option value="1" @if($page_data->terms_status == 1) selected @endif>Show</option>
+                                                        <option value="0"  @if($page_data->terms_status == 0) selected @endif>Hide</option>
                                                     </select>
                                                    
                                                 </div>
