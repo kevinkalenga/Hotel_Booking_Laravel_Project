@@ -120,3 +120,6 @@ Route::post('/admin/page/about/update', [AdminPageController::class, 'about_upda
 // Terms
 Route::get('/admin/page/terms', [AdminPageController::class, 'terms'])->name('admin_page_terms')->middleware('admin:admin');
 Route::post('/admin/page/terms/update', [AdminPageController::class, 'terms_update'])->name('admin_page_terms_update')->middleware('admin:admin');
+// Privacy
+Route::get('/admin/page/privacy', [AdminPageController::class, 'privacy'])->name('admin_page_privacy')->middleware('admin:admin');
+Route::post('/admin/page/pivacy/update', [AdminPageController::class, 'privacy_update'])->name('admin_page_privacy_update')->middleware('admin:admin');
