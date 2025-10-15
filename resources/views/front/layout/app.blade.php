@@ -145,7 +145,9 @@
                             <h2 class="heading">Useful Links</h2>
                             <ul class="useful-links">
                                 <li><a href="{{route('home')}}">Home</a></li>
-                                <li><a href="terms.html">Terms and Conditions</a></li>
+                                @if($global_page_data->terms_status == 1)
+                                    <li><a href="{{route('terms')}}">{{$global_page_data->terms_heading}}</a></li>
+                                @endif
                                 <li><a href="privacy.html">Privacy Policy</a></li>
                                 <li><a href="{{route('faq')}}">FAQ</a></li>
                             </ul>
