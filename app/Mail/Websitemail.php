@@ -28,9 +28,9 @@ class Websitemail extends Mailable
      */
     public function envelope(): Envelope
     {
-        return new Envelope(
-            subject: 'Websitemail',
-        );
+         return new Envelope(
+          subject: $this->subject, // <-- ici, le nom correct
+      );
     }
 
     /**
@@ -41,7 +41,8 @@ class Websitemail extends Mailable
         return new Content(
             view: 'email.email', // <- ici tu mets simplement le nom de ta vue
             with: [
-            'subject' => $this->subject,
+            // 'subject' => $this->subject,
+              'body' => $this->body,
           ],
         );
     }
