@@ -161,8 +161,9 @@
                                 @if($global_page_data->privacy_status == 1)
                                     <li><a href="{{route('privacy')}}">{{$global_page_data->privacy_heading}}</a></li>
                                 @endif
-                                
-                                <li><a href="{{route('faq')}}">FAQ</a></li>
+                                @if($global_page_data->terms_status == 1)
+                                  <li><a href="{{route('faq')}}">{{$global_page_data->faq_heading}}</a></li>
+                                @endif
                             </ul>
                         </div>
                     </div>
