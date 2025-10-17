@@ -47,7 +47,7 @@ class ContactController extends Controller
           try {
                   \Mail::to($admin_email)->send(new \App\Mail\Websitemail($subject, $message));
 
-                  return response()->json(['code' => 1, 'success_message' => 'Email envoyé avec succès']);
+                  return response()->json(['code' => 1, 'success_message' => 'Email is sent successfully']);
               } catch (\Exception $e) {
                   return response()->json([
                       'code' => 0,
