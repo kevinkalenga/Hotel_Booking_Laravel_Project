@@ -45,8 +45,12 @@
                             @if($global_page_data->checkout_status == 1)
                               <li class="menu"><a href="checkout.html"> {{$global_page_data->checkout_heading}}</a></li>
                             @endif
-                              <li class="menu"><a href="signup.html">Sign Up</a></li>
-                              <li class="menu"><a href="login.html">Login</a></li>
+                            @if($global_page_data->signup_status == 1)
+                              <li class="menu"><a href="signup.html">{{$global_page_data->signup_heading}}</a></li>
+                            @endif
+                            @if($global_page_data->signin_status == 1)
+                              <li class="menu"><a href="login.html">{{$global_page_data->signin_heading}}</a></li>
+                            @endif
                         </ul>
                     </div>
                 </div>
