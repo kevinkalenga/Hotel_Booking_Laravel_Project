@@ -11,7 +11,10 @@
 
                     <li class="{{ Request::is('admin/home') ? 'active': '' }}"><a class="nav-link" href="{{route('admin_home')}}"><i class="fa fa-hand-o-right"></i> <span>Dashboard</span></a></li>
 
-                    <li class="nav-item dropdown {{ Request::is('admin/page/about') || Request::is('admin/page/terms') || Request::is('admin/page/privacy') || Request::is('admin/page/contact') || Request::is('admin/page/photo-gallery') || Request::is('admin/page/video-gallery') ||  Request::is('admin/page/faq')   ? 'active': '' }}">
+                    <li class="nav-item dropdown {{ Request::is('admin/page/about') || Request::is('admin/page/terms') ||
+                     Request::is('admin/page/privacy') || Request::is('admin/page/contact') ||
+                      Request::is('admin/page/photo-gallery') || Request::is('admin/page/video-gallery')
+                       ||  Request::is('admin/page/faq') || Request::is('admin/page/blog')  ? 'active': '' }}">
                         <a href="#" class="nav-link has-dropdown"><i class="fa fa-hand-o-right"></i> <span>Pages</span></a>
                         <ul class="dropdown-menu">
                             <li class="{{ Request::is('admin/page/about')  ? 'active': '' }}"><a class="nav-link" href="{{route('admin_page_about')}}"><i class="fa fa-angle-right"></i> About</a></li>
@@ -21,6 +24,7 @@
                             <li class="{{ Request::is('admin/page/photo-gallery')  ? 'active': '' }}"><a class="nav-link" href="{{route('admin_page_photo_gallery')}}"><i class="fa fa-angle-right"></i> Photo Gallery</a></li>
                             <li class="{{ Request::is('admin/page/video-gallery')  ? 'active': '' }}"><a class="nav-link" href="{{route('admin_page_video_gallery')}}"><i class="fa fa-angle-right"></i> Video Gallery</a></li>
                             <li class="{{ Request::is('admin/page/faq')  ? 'active': '' }}"><a class="nav-link" href="{{route('admin_page_faq')}}"><i class="fa fa-angle-right"></i> FAQ</a></li>
+                            <li class="{{ Request::is('admin/page/blog')  ? 'active': '' }}"><a class="nav-link" href="{{route('admin_page_blog')}}"><i class="fa fa-angle-right"></i> Blog</a></li>
                             
                         </ul>
                     </li>
