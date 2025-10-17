@@ -252,7 +252,19 @@
             <i class="fa fa-angle-up"></i>
         </div>
 		
-         @include('front.layout.scripts_footer')
+    @include('front.layout.scripts_footer')
+
+@if(session('success'))
+   <script>
+        iziToast.show({
+            message: '{{session("success")}}',
+            color: 'green',
+            position: 'topRight',
+        });
+    </script>
+@endif
+
+
 
 <script>
     (function($){
