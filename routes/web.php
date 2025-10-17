@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\AdminTestimonialController;
 use App\Http\Controllers\Admin\AdminPostController;
 use App\Http\Controllers\Admin\AdminFaqController;
 use App\Http\Controllers\Admin\AdminPageController;
+use App\Http\Controllers\Admin\AdminSubscriberController;
 
 
 use App\Http\Controllers\Front\HomeController;
@@ -161,3 +162,5 @@ Route::post('/admin/page/signup/update', [AdminPageController::class, 'signup_up
 // SignIn
 Route::get('/admin/page/signin', [AdminPageController::class, 'signin'])->name('admin_page_signin')->middleware('admin:admin');
 Route::post('/admin/page/signin/update', [AdminPageController::class, 'signin_update'])->name('admin_page_signin_update')->middleware('admin:admin');
+
+Route::get('/admin/subscriber/show', [AdminSubscriberController::class, 'show'])->name('admin_subscriber_show')->middleware('admin:admin');
