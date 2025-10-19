@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\AdminFaqController;
 use App\Http\Controllers\Admin\AdminPageController;
 use App\Http\Controllers\Admin\AdminSubscriberController;
 use App\Http\Controllers\Admin\AdminAmenityController;
+use App\Http\Controllers\Admin\AdminRoomController;
 
 
 use App\Http\Controllers\Front\HomeController;
@@ -176,3 +177,10 @@ Route::post('/admin/amenity/store', [AdminAmenityController::class, 'store'])->n
 Route::get('/admin/amenity/edit/{id}', [AdminAmenityController::class, 'edit'])->name('admin_amenity_edit')->middleware('admin:admin');
 Route::post('/admin/amenity/edit/{id}', [AdminAmenityController::class, 'update'])->name('admin_amenity_update')->middleware('admin:admin');
 Route::get('/admin/amenity/delete/{id}', [AdminAmenityController::class, 'delete'])->name('admin_amenity_delete')->middleware('admin:admin');
+// Room
+Route::get('/admin/room/view', [AdminRoomController::class, 'index'])->name('admin_room_view')->middleware('admin:admin');
+Route::get('/admin/room/add', [AdminRoomController::class, 'add'])->name('admin_room_add')->middleware('admin:admin');
+Route::post('/admin/room/store', [AdminRoomController::class, 'store'])->name('admin_room_store')->middleware('admin:admin');
+Route::get('/admin/room/edit/{id}', [AdminRoomController::class, 'edit'])->name('admin_room_edit')->middleware('admin:admin');
+Route::post('/admin/room/edit/{id}', [AdminRoomController::class, 'update'])->name('admin_room_update')->middleware('admin:admin');
+Route::get('/admin/room/delete/{id}', [AdminRoomController::class, 'delete'])->name('admin_room_delete')->middleware('admin:admin');
