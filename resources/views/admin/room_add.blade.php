@@ -25,21 +25,21 @@
                                                     </div>
                                                 </div>
                                                 <div class="mb-4">
-                                                    <label class="form-label">Name</label>
+                                                    <label class="form-label">Name *</label>
                                                     <input type="text" class="form-control" name="name" value="{{old('name')}}">
                                                 </div>
                                                 <div class="mb-4">
-                                                    <label class="form-label">Description</label>
+                                                    <label class="form-label">Description *</label>
                                                     <textarea name="description" class="form-control snote" cols="30" rows="10">
                                                           {{old('description')}}
                                                     </textarea>
                                                 </div>
                                                 <div class="mb-4">
-                                                    <label class="form-label">Price</label>
+                                                    <label class="form-label">Price *</label>
                                                     <input type="text" class="form-control" name="price" value="{{old('price')}}">
                                                 </div>
                                                 <div class="mb-4">
-                                                    <label class="form-label">Total Rooms</label>
+                                                    <label class="form-label">Total Rooms *</label>
                                                     <input type="text" class="form-control" name="total_rooms" value="{{old('total_rooms')}}">
                                                 </div>
                                                 <div class="mb-4">
