@@ -46,6 +46,7 @@ Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact/send-email', [ContactController::class, 'send_email'])->name('contact_send_email');
 Route::post('/subscriber/send-email', [SubscriberController::class, 'send_email'])->name('subscriber_send_email');
 Route::get('/subscriber/verify/{email}/{token}', [SubscriberController::class, 'verify'])->name('subscriber_verify');
+Route::get('/room', [RoomController::class, 'index'])->name('room');
 Route::get('/room/{id}', [RoomController::class, 'single_room'])->name('room_detail');
 
 
@@ -151,6 +152,9 @@ Route::post('/admin/page/faq/update', [AdminPageController::class, 'faq_update']
 // Blog
 Route::get('/admin/page/blog', [AdminPageController::class, 'blog'])->name('admin_page_blog')->middleware('admin:admin');
 Route::post('/admin/page/blog/update', [AdminPageController::class, 'blog_update'])->name('admin_page_blog_update')->middleware('admin:admin');
+// Room
+Route::get('/admin/page/room', [AdminPageController::class, 'room'])->name('admin_page_room')->middleware('admin:admin');
+Route::post('/admin/page/room/update', [AdminPageController::class, 'room_update'])->name('admin_page_room_update')->middleware('admin:admin');
 // Cart
 Route::get('/admin/page/cart', [AdminPageController::class, 'cart'])->name('admin_page_cart')->middleware('admin:admin');
 Route::post('/admin/page/cart/update', [AdminPageController::class, 'cart_update'])->name('admin_page_cart_update')->middleware('admin:admin');

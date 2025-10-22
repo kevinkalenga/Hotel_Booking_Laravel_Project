@@ -8,11 +8,11 @@ use App\Models\Room;
 
 class RoomController extends Controller
 {
-    // public function index()
-    // {
-    //       $post_all = Post::paginate(9); //Limiter le nombre de postes
-    //       return view('front.blog', compact('post_all'));
-    // }
+    public function index()
+    {
+          $room_all = Room::paginate(12);
+          return view('front.room', compact('room_all'));
+    }
     public function single_room($id)
     {
         // rRoomPhoto is the relation
