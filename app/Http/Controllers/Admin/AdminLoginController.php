@@ -11,6 +11,9 @@ use App\Models\Admin;
 
 class AdminLoginController extends Controller
 {
+    /*Within Kubernetes, a ReplicaSet is a fundamental concept aimed 
+    at maintaining a stable set of replica Pods running at any given time*/
+    
     /* -------------------- Page de connexion -------------------- */
     public function index()
     {
