@@ -24,6 +24,7 @@ return new class extends Migration
             $table->text('zip')->nullable();
             $table->text('photo')->nullable();
             $table->text('token')->nullable();
+            $table->integer('status');
             $table->timestamps();
         });
     }
