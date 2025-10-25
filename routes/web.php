@@ -16,6 +16,8 @@ use App\Http\Controllers\Admin\AdminSubscriberController;
 use App\Http\Controllers\Admin\AdminAmenityController;
 use App\Http\Controllers\Admin\AdminRoomController;
 
+use App\Http\Controllers\Customer\CustomerHomeController;
+use App\Http\Controllers\Customer\CustomerAuthController;
 
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\BlogController;
@@ -70,13 +72,23 @@ Route::get('/admin/reset-password/{token}/{email}', [AdminLoginController::class
 Route::post('/admin/reset-password/{token}/{email}', [AdminLoginController::class, 'reset_password_submit'])->name('admin_reset_password_submit');
 
 
+// customer - Login and Logout
+Route::get('/customer/logout', [CustomerAuthController::class, 'logout'])->name('customer_logout');
+Route::get('/login', [CustomerAuthController::class, 'login'])->name('customer_login');
+Route::post('/login-submit', [CustomerAuthController::class, 'login_submit'])->name('customer_login_submit');
+Route::get('/signup', [CustomerAuthController::class, 'signup'])->name('customer_signup');
 
+// customer-middleware
+Route::group(['middleware' =>['customer:customer']], function(){
+     Route::get('/customer/home', [CustomerHomeController::class, 'customer'])->name('customer_home');
+     Route::get('/customer/edit-profile', [CustomerProfilController::class, 'index'])->name('customer_profile');
+     Route::post('/customer/edit-profile-submit', [CustomerProfilController::class, 'profile_submit'])->name('customer_profile_submit');
+});
 
-Route::group(['middleware' =>['admin:admin']], function(){
+// Admin - Middleware
+Route::group(['middleware' => ['admin' =>'admin']], function(){
 
-
-
-   // Edit profile (GET + POST) ✅ middleware admin appliqué sur les deux
+// Edit profile (GET + POST) ✅ middleware admin appliqué sur les deux
 
     Route::get('/admin/edit-profile', [AdminProfilController::class, 'index'])->name('admin_profile');
     Route::post('/admin/edit-profile-submit', [AdminProfilController::class, 'profile_submit'])->name('admin_profile_submit');
@@ -142,7 +154,7 @@ Route::group(['middleware' =>['admin:admin']], function(){
    Route::post('/admin/page/terms/update', [AdminPageController::class, 'terms_update'])->name('admin_page_terms_update');
    // Privacy
    Route::get('/admin/page/privacy', [AdminPageController::class, 'privacy'])->name('admin_page_privacy');
-   Route::post('/admin/page/pivacy/update', [AdminPageController::class, 'privacy_update'])->name('admin_page_privacy_update');
+   Route::post('/admin/page/privacy/update', [AdminPageController::class, 'privacy_update'])->name('admin_page_privacy_update');
    // Contact
    Route::get('/admin/page/contact', [AdminPageController::class, 'contact'])->name('admin_page_contact');
    Route::post('/admin/page/contact/update', [AdminPageController::class, 'contact_update'])->name('admin_page_contact_update');
@@ -201,4 +213,14 @@ Route::group(['middleware' =>['admin:admin']], function(){
    Route::get('/admin/room/gallery/{id}', [AdminRoomController::class, 'gallery'])->name('admin_room_gallery');
    Route::post('/admin/room/gallery/store/{id}', [AdminRoomController::class, 'gallery_store'])->name('admin_room_gallery_store');
    Route::get('/admin/room/gallery/delete/{id}', [AdminRoomController::class, 'gallery_delete'])->name('admin_room_gallery_delete');
-})
+
+
+
+
+
+
+
+
+
+
+});
