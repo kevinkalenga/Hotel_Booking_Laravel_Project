@@ -72,13 +72,20 @@ Route::get('/admin/reset-password/{token}/{email}', [AdminLoginController::class
 Route::post('/admin/reset-password/{token}/{email}', [AdminLoginController::class, 'reset_password_submit'])->name('admin_reset_password_submit');
 
 
-// customer - Login and Logout
+// customer - Login, Logout and forget pwd
 Route::get('/customer/logout', [CustomerAuthController::class, 'logout'])->name('customer_logout');
 Route::get('/login', [CustomerAuthController::class, 'login'])->name('customer_login');
 Route::post('/login-submit', [CustomerAuthController::class, 'login_submit'])->name('customer_login_submit');
 Route::get('/signup', [CustomerAuthController::class, 'signup'])->name('customer_signup');
 Route::post('/signup-submit', [CustomerAuthController::class, 'signup_submit'])->name('customer_signup_submit');
 Route::get('/signup-verify/{email}/{token}', [CustomerAuthController::class, 'signup_verify'])->name('customer_signup_verify');
+Route::get('/forget-password', [CustomerAuthController::class, 'forget_password'])->name('customer_forget_password');
+Route::post('/forget-password-submit', [CustomerAuthController::class, 'forget_password_submit'])->name('customer_forget_password_submit');
+Route::get('/reset-password/{token}/{email}', [CustomerAuthController::class, 'reset_password'])->name('customer_reset_password');
+Route::post('/reset-password/{token}/{email}', [CustomerAuthController::class, 'reset_password_submit'])->name('customer_reset_password_submit');
+
+
+
 
 // customer-middleware
 Route::group(['middleware' =>['customer:customer']], function(){
@@ -88,7 +95,7 @@ Route::group(['middleware' =>['customer:customer']], function(){
 });
 
 // Admin - Middleware
-Route::group(['middleware' => ['admin' =>'admin']], function(){
+Route::group(['middleware' => 'admin'], function(){
 
 // Edit profile (GET + POST) ✅ middleware admin appliqué sur les deux
 
@@ -187,7 +194,13 @@ Route::group(['middleware' => ['admin' =>'admin']], function(){
    // SignUp
    Route::get('/admin/page/signup', [AdminPageController::class, 'signup'])->name('admin_page_signup');
    Route::post('/admin/page/signup/update', [AdminPageController::class, 'signup_update'])->name('admin_page_signup_update');
-   // SignIn
+   // Forget Password
+   Route::get('/admin/page/forget-password', [AdminPageController::class, 'forget_password'])->name('admin_page_forget_password');
+   Route::post('/admin/page/forget-password/update', [AdminPageController::class, 'forget_password_update'])->name('admin_page_forget_password_update');
+   // Reset Password
+   Route::get('/admin/page/reset-password', [AdminPageController::class, 'reset_password'])->name('admin_page_reset_password');
+   Route::post('/admin/page/reset-password/update', [AdminPageController::class, 'reset_password_update'])->name('admin_page_reset_password_update');
+   //  SignIn  
    Route::get('/admin/page/signin', [AdminPageController::class, 'signin'])->name('admin_page_signin');
    Route::post('/admin/page/signin/update', [AdminPageController::class, 'signin_update'])->name('admin_page_signin_update');
 
