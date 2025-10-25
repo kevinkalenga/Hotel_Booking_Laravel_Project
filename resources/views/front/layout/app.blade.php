@@ -251,6 +251,21 @@
 		
     @include('front.layout.scripts_footer')
 
+
+
+@if($errors->any())
+    @foreach ($errors->all() as $error)
+       <script>
+        iziToast.show({
+            message: '{{$error}}',
+            color: 'red',
+            position: 'topRight',
+        });
+      </script>
+    @endforeach
+@endif
+
+
 @if(session('success'))
    <script>
         iziToast.show({

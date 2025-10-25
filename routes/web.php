@@ -82,7 +82,7 @@ Route::get('/signup-verify/{email}/{token}', [CustomerAuthController::class, 'si
 
 // customer-middleware
 Route::group(['middleware' =>['customer:customer']], function(){
-     Route::get('/customer/home', [CustomerHomeController::class, 'customer'])->name('customer_home');
+     Route::get('/customer/home', [CustomerHomeController::class, 'index'])->name('customer_home');
      Route::get('/customer/edit-profile', [CustomerProfilController::class, 'index'])->name('customer_profile');
      Route::post('/customer/edit-profile-submit', [CustomerProfilController::class, 'profile_submit'])->name('customer_profile_submit');
 });
