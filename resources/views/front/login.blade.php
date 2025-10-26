@@ -22,16 +22,27 @@
                             <div class="mb-3">
                                 <label for="" class="form-label">Email Address</label>
                                 <input type="email" class="form-control" name="email">
-                                @if($errors->has('email'))
-                                  <span class="text-danger">{{ $errors->first('email')}}</span>
-                                @endif
+                              
+                                  @error('email')
+                                    <div class="text-danger">
+                                      {{$message}}
+                                    </div>
+                                  @enderror
+                              @if(session()->get('error'))
+                                <div class="text-danger">
+                                  {{session()->get('error')}}
+                                </div>
+                              @endif
                             </div>
                             <div class="mb-3">
                                 <label for="" class="form-label">Password</label>
                                 <input type="password" class="form-control" name="password">
-                                @if($errors->has('password'))
-                                  <span class="text-danger">{{ $errors->first('password')}}</span>
-                                @endif
+                                      @error('password')
+                                        <div class="text-danger">
+                                          {{$message}}
+                                        </div>
+                                      @enderror
+                               
                             </div>
                             
                             <div class="mb-3">
