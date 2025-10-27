@@ -69,10 +69,13 @@
                                        $i++;
                                      }
 
+                                     
+                                     $total_price = 0;
+                                     
                                      for($i=0; $i < count($arr_cart_room_id); $i++)
                                      {
 
-                                        $room_data = DB::table('rooms')->where('id', $arr_cart_room_id)->first();
+                                        $room_data = DB::table('rooms')->where('id', $arr_cart_room_id[$i])->first();
 
                                 @endphp 
 
@@ -92,7 +95,18 @@
                                                     Adult: {{$arr_cart_adult[$i]}}<br>
                                                     Children: {{$arr_cart_children[$i]}}
                                                 </td>
-                                                <td>$60</td>
+                                                <td>
+                                                    @php 
+                                                       $d1 = explode('/', $arr_cart_checkin_date[$i]);
+                                                       $d2 = explode('/', $arr_cart_checkout_date[$i]);
+                                                       $d1_new = $d1[2].'-'.$d1[1].'-'.$d1[0];
+                                                       $d2_new = $d2[2].'-'.$d2[1].'-'.$d2[0];
+                                                       $t1 = strtotime($d1_new);
+                                                       $t2 = strtotime($d2_new);
+                                                       $diff = ($t2-$t1)/60/60/24;
+                                                       echo '$'.$room_data->price * $diff;
+                                                    @endphp
+                                                </td>
                                             </tr>
 
                                       
@@ -101,14 +115,14 @@
                                       
                                          @php
                                     
-                                    
+                                         $total_price = $total_price + ($room_data->price*$diff);
                                       }
                                     
                                   @endphp
                                   
                                     <tr>
                                         <td colspan="8" class="tar">Total:</td>
-                                        <td>$160</td>
+                                        <td>${{$total_price}}</td>
                                     </tr>
                                 </tbody>
                             </table>
