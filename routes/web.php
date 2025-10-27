@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\AdminRoomController;
 
 use App\Http\Controllers\Customer\CustomerHomeController;
 use App\Http\Controllers\Customer\CustomerAuthController;
+use App\Http\Controllers\Customer\CustomerProfileController;
 
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\BlogController;
@@ -90,8 +91,8 @@ Route::post('/reset-password/{token}/{email}', [CustomerAuthController::class, '
 // customer-middleware
 Route::group(['middleware' =>['customer:customer']], function(){
      Route::get('/customer/home', [CustomerHomeController::class, 'index'])->name('customer_home');
-     Route::get('/customer/edit-profile', [CustomerProfilController::class, 'index'])->name('customer_profile');
-     Route::post('/customer/edit-profile-submit', [CustomerProfilController::class, 'profile_submit'])->name('customer_profile_submit');
+     Route::get('/customer/edit-profile', [CustomerProfileController::class, 'index'])->name('customer_profile');
+     Route::post('/customer/edit-profile-submit', [CustomerProfileController::class, 'profile_submit'])->name('customer_profile_submit');
 });
 
 // Admin - Middleware
