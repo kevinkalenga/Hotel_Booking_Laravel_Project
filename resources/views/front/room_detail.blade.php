@@ -102,7 +102,7 @@
 
                         <div class="sidebar-container" id="sticky_sidebar">
 
-                            <form action="cart.html" method="post">
+                            
 
                                 <div class="widget">
                                     <h2>Room Price per Night</h2>
@@ -111,6 +111,9 @@
                                     </div>
                                 </div>
                                 <div class="widget">
+                                  <form action="{{route('cart_submit')}}" method="post">
+                                    @csrf
+                                    <input type="hidden" name="room_id" value="{{$single_room_data->id}}">
                                     <h2>Reserve This Room</h2>
                                     <div class="form-group mb_20">
                                         <label for="">Check in & Check out</label>
@@ -118,46 +121,23 @@
                                     </div>
                                     <div class="form-group mb_20">
                                         <label for="">Adult</label>
-                                        <select name="" class="form-control select2">
-                                            <option value="">1</option>
-                                            <option value="">2</option>
-                                            <option value="">3</option>
-                                            <option value="">4</option>
-                                            <option value="">5</option>
-                                            <option value="">6</option>
-                                            <option value="">7</option>
-                                            <option value="">8</option>
-                                            <option value="">9</option>
-                                            <option value="">10</option>
-                                        </select>
+                                        <input type="number" name="adult" class="form-control" min="1" max="30" placeholder="Adults">
+                                       
                                     </div>
                                     <div class="form-group mb_20">
                                         <label for="">Children</label>
-                                        <select name="" class="form-control select2">
-                                            <option value="">1</option>
-                                            <option value="">2</option>
-                                            <option value="">3</option>
-                                            <option value="">4</option>
-                                            <option value="">5</option>
-                                            <option value="">6</option>
-                                            <option value="">7</option>
-                                            <option value="">8</option>
-                                            <option value="">9</option>
-                                            <option value="">10</option>
-                                        </select>
+                                        <input type="number" name="children" class="form-control" min="0" max="30" placeholder="Children">
+                        
                                     </div>
+                                     <button type="submit" class="book-now">Add to Cart</button>
+                                   </form>
                                 </div>
 
 
-                                <div class="widget">
-                                    <h2>Total</h2>
-                                    <div class="price">
-                                        $230
-                                    </div>
-                                    <button type="submit" class="book-now">Add to Cart</button>
-                                </div>
+                              
 
-                            </div>
+                             </div>
+                          
 
                         </div>
 
@@ -166,5 +146,18 @@
                 </div>
             </div>
         </div>
+
+
+@if($errors->any())
+    @foreach ($errors->all() as $error)
+       <script>
+        iziToast.show({
+            message: '{{$error}}',
+            color: 'red',
+            position: 'topRight',
+        });
+      </script>
+    @endforeach
+@endif
 
 @endsection
