@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Http\Controllers\Front;
-
+use App\Models\Customer;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Auth;
 
 class BookingController extends Controller
 {
@@ -33,64 +34,6 @@ class BookingController extends Controller
     {
         return view('front.cart');
     }
-
-    // public function cart_delete($id)
-    // {
-      
-    //      $arr_cart_room_id = array();
-    //      $i=0;
-    //      foreach(session()->get('cart_room_id') as $value){
-    //        $arr_cart_room_id[$i] = $value;
-    //        $i++;
-    //      }
-                                     
-    //      $arr_cart_checkin_date = array();
-    //      $i=0;
-    //      foreach(session()->get('cart_checkin_date') as $value){
-    //        $arr_cart_checkin_date[$i] = $value;
-    //        $i++;
-    //      }
-                                     
-    //      $arr_cart_checkout_date = array();
-    //      $i=0;
-    //      foreach(session()->get('cart_checkout_date') as $value){
-    //        $arr_cart_checkout_date[$i] = $value;
-    //        $i++;
-    //      }
-                                     
-    //      $arr_cart_adult = array();
-    //      $i=0;
-    //      foreach(session()->get('cart_adult') as $value){
-    //        $arr_cart_adult[$i] = $value;
-    //        $i++;
-    //      }
-    //      $arr_cart_children = array();
-    //      $i=0;
-    //      foreach(session()->get('cart_children') as $value){
-    //        $arr_cart_children[$i] = $value;
-    //        $i++;
-    //      }
-
-    //     session()->forget('cart_room_id');
-    //     session()->forget('cart_checkin_date');
-    //     session()->forget('cart_checkout_date');
-    //     session()->forget('cart_adult');
-    //     session()->forget('cart_children');
-
-    //     for($i=0; $i < count($arr_cart_room_id); $i++) {
-    //        if($arr_cart_room_id[$i] == $id) {
-
-    //        } else {
-    //               session()->push('cart_room_id', $arr_cart_room_id[$i]);
-    //               session()->push('cart_checkin_date', $arr_cart_checkin_date[$i]);
-    //               session()->push('cart_checkout_date', $arr_cart_checkout_date[$i]);
-    //               session()->push('cart_adult', $arr_cart_adult[$i]);
-    //               session()->push('cart_children', $arr_cart_children[$i]);
-    //        }
-    //     }
-
-    //      return redirect()->back()->with('success', 'Cart item is deleted Successfully');
-    // }
 
    public function cart_delete($id)
    {
@@ -125,6 +68,21 @@ class BookingController extends Controller
     }
 
     return redirect()->back()->with('success', 'Cart item deleted successfully');
+   }
+
+   public function checkout()
+   {
+      if(!Auth::guard('customer')->check()) {
+        return redirect()->route('cart')->with('error', 'You must login in order to checkout');
+      }
+
+    
+    
+       if (!session()->has('cart_room_id') || empty(session('cart_room_id'))) {
+          return redirect()->route('cart')->with('error', 'There is no item in the cart');
+       }
+    
+      return view('front.checkout');
    }
 
 }

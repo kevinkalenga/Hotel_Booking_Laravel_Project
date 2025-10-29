@@ -13,6 +13,36 @@
             </div>
         </div>
         
+        
+          {{-- 🔔 Messages flash --}}
+        @if (session('error'))
+            <script>
+                iziToast.show({
+                    message: {!! json_encode(session('error')) !!},
+                    color: 'red',
+                    position: 'topRight',
+                });
+            </script>
+        @endif
+
+        @if (session('success'))
+            <script>
+                iziToast.show({
+                    message: {!! json_encode(session('success')) !!},
+                    color: 'green',
+                    position: 'topRight',
+                });
+            </script>
+        @endif
+        
+        
+        
+        
+        
+        
+        
+        
+        
         <div class="page-content">
             <div class="container">
                 <div class="row cart">
@@ -129,7 +159,7 @@
                         </div>                       
 
                         <div class="checkout mb_20">
-                            <a href="checkout.html" class="btn btn-primary bg-website">Checkout</a>
+                            <a href="{{route('checkout')}}" class="btn btn-primary bg-website">Checkout</a>
                         </div>
                       @else
                         <div class="text-danger mb-30">
