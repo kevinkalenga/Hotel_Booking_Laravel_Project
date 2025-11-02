@@ -5,6 +5,10 @@ use App\Models\Customer;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Auth;
+use PayPalCheckoutSdk\Core\PayPalHttpClient;
+use PayPalCheckoutSdk\Core\SandboxEnvironment;
+use PayPalCheckoutSdk\Core\ProductionEnvironment;
+use PayPalCheckoutSdk\Orders\OrdersGetRequest;
 
 class BookingController extends Controller
 {
@@ -121,5 +125,92 @@ class BookingController extends Controller
         
         return view('front.payment');
     }
+
+
+
+    // public function paypal(Request $request)
+    // {
+    //     $orderID = $request->query('order_id');
+
+    //     // Charger les credentials depuis config/services.php
+    //     $clientId = config('services.paypal.client_id');
+    //     $clientSecret = config('services.paypal.client_secret');
+    //     $mode = config('services.paypal.mode', 'sandbox');
+
+    //     // Initialiser l'environnement PayPal
+    //     $environment = $mode === 'sandbox' 
+    //         ? new SandboxEnvironment($clientId, $clientSecret)
+    //         : new ProductionEnvironment($clientId, $clientSecret);
+
+    //     $client = new PayPalHttpClient($environment);
+
+    //     try {
+    //         // Vérifier l'ordre PayPal
+    //         $requestOrder = new OrdersGetRequest($orderID);
+    //         $response = $client->execute($requestOrder);
+    //         $order = $response->result;
+
+    //         if ($order->status === 'COMPLETED') {
+    //             // ✅ Paiement validé, ici tu peux enregistrer la réservation
+    //             // Exemple : Booking::create([...]);
+
+    //             return redirect()->route('thankyou.page')
+    //                 ->with('success', 'Payment successful!');
+    //         } else {
+    //             return redirect()->back()
+    //                 ->with('error', 'Payment not completed.');
+    //         }
+    //     } catch (\Exception $e) {
+    //         return redirect()->back()
+    //             ->with('error', 'PayPal verification failed: ' . $e->getMessage());
+    //     }
+    // }
+
+
+public function paypal(Request $request)
+{
+    $orderID = $request->query('order_id');
+
+    $clientId = config('services.paypal.client_id');
+    $clientSecret = config('services.paypal.client_secret');
+    $mode = config('services.paypal.mode', 'sandbox');
+
+    $environment = $mode === 'sandbox'
+        ? new SandboxEnvironment($clientId, $clientSecret)
+        : new ProductionEnvironment($clientId, $clientSecret);
+
+    $client = new PayPalHttpClient($environment);
+
+    try {
+        $requestOrder = new OrdersGetRequest($orderID);
+        $response = $client->execute($requestOrder);
+        $order = $response->result;
+
+        if ($order->status === 'COMPLETED') {
+            // ✅ Paiement validé : tu peux sauvegarder la commande ici
+            return redirect()->route('payment.success')
+                ->with('success', 'Paiement confirmé ! Merci pour votre réservation.');
+        } else {
+            return redirect()->route('payment.cancel')
+                ->with('error', 'Le paiement n’a pas été complété.');
+        }
+    } catch (\Exception $e) {
+        return redirect()->route('payment.cancel')
+            ->with('error', 'Erreur PayPal : ' . $e->getMessage());
+    }
+}
+
+public function paymentSuccess()
+{
+    // Ici tu peux afficher la page de remerciement + infos sur la réservation
+    return view('front.payment_success');
+}
+
+public function paymentCancel()
+{
+    // Affiche une page d'annulation ou d'erreur
+    return view('front.payment_cancel');
+}
+
 
 }

@@ -2,6 +2,9 @@
 @extends('front.layout.app')
 
 @section('main_content')
+<script src="https://www.paypal.com/sdk/js?client-id={{ config('services.paypal.client_id') }}&currency=USD"></script>
+
+
 
         <div class="page-top">
             <div class="bg"></div>
@@ -29,7 +32,7 @@
 
                         <div class="paypal mt_20">
                             <h4>Pay with PayPal</h4>
-                            <p>Write necessary code here</p>
+                            <div id="paypal-button-container"></div>
                         </div>
     
                         <div class="stripe mt_20">
@@ -195,6 +198,44 @@
 @endif
 
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    paypal.Buttons({
+        style: {
+            layout: 'vertical',
+            color: 'blue',
+            shape: 'rect',
+            label: 'paypal'
+        },
+
+        // ✅ Crée la commande
+        createOrder: function(data, actions) {
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: '{{ $total_price }}' // total dynamique
+                    }
+                }]
+            });
+        },
+
+        // ✅ Quand le paiement est approuvé
+        onApprove: function(data, actions) {
+            return actions.order.capture().then(function(details) {
+                // Redirection propre avec route()
+                window.location.href = "{{ route('paypal') }}?order_id=" + data.orderID;
+            });
+        },
+
+        // Gestion des erreurs
+        onError: function(err) {
+            console.error(err);
+            alert('Une erreur est survenue avec PayPal.');
+        }
+
+    }).render('#paypal-button-container');
+});
+</script>
 
 
 @endsection
