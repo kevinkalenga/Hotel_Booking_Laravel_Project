@@ -60,6 +60,9 @@ Route::post('/payment', [BookingController::class, 'payment'])->name('payment');
 Route::get('/payment/paypal', [BookingController::class, 'paypal'])->name('paypal');
 Route::get('/payment/cancel', [BookingController::class, 'paymentCancel'])->name('payment.cancel');
 Route::get('/payment/success', [BookingController::class, 'paymentSuccess'])->name('payment.success');
+// 🔹 Stripe
+Route::post('/payment/stripe/create-intent', [BookingController::class, 'stripeCreateIntent'])->name('stripe.createIntent');
+Route::get('/payment/stripe/success', [BookingController::class, 'stripeSuccess'])->name('stripe.success');
 
 
 /* ---------------------- Admin ---------------------- */
@@ -107,7 +110,7 @@ Route::group(['middleware' =>['customer:customer']], function(){
 // Admin - Middleware
 Route::group(['middleware' => 'admin'], function(){
 
-// Edit profile (GET + POST) ✅ middleware admin appliqué sur les deux
+// Edit profile (GET + POST) middleware admin appliqué sur les deux
 
     Route::get('/admin/edit-profile', [AdminProfilController::class, 'index'])->name('admin_profile');
     Route::post('/admin/edit-profile-submit', [AdminProfilController::class, 'profile_submit'])->name('admin_profile_submit');
