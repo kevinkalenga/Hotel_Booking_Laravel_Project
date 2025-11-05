@@ -119,10 +119,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Capture le paiement côté client avant la redirection
         onApprove: function(data, actions) {
-            return actions.order.capture().then(function(details) {
-                const captureId = details.purchase_units[0].payments.captures[0].id;
-                window.location.href = "{{ route('paypal') }}?capture_id=" + captureId;
-            });
+             return actions.order.capture().then(function(details) {
+           // Récupère le captureId généré après paiement réussi
+           const captureId = details.purchase_units[0].payments.captures[0].id;
+
+        // Redirection vers Laravel pour enregistrer la commande
+        window.location.href = "{{ route('paypal') }}?capture_id=" + captureId;
+    });
         },
 
         onError: function(err) {

@@ -13,6 +13,7 @@ use PayPalCheckoutSdk\Core\SandboxEnvironment;
 use PayPalCheckoutSdk\Core\ProductionEnvironment;
 use PayPalCheckoutSdk\Orders\OrdersGetRequest;
 use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
+use App\Mail\Websitemail;
 
 class BookingController extends Controller
 {
@@ -135,21 +136,176 @@ class BookingController extends Controller
   
 
 
-     public function paypal(Request $request)
+//         public function paypal(Request $request)
+// {
+//     // 🔹 Récupération du capture_id envoyé depuis le frontend
+//     $captureId = $request->query('capture_id');
+
+//     if (!$captureId) {
+//         return redirect()->route('payment.cancel')
+//             ->with('error', 'No payment identifier received.');
+//     }
+
+//     // 🔹 Vérification que le client est connecté
+//     if (!Auth::guard('customer')->check()) {
+//         return redirect()->route('cart')->with('error', 'Please login to continue.');
+//     }
+
+//     try {
+//         // 🔹 Récupération du panier
+//         $cart_room_id = session()->get('cart_room_id', []);
+//         $cart_checkin_date = session()->get('cart_checkin_date', []);
+//         $cart_checkout_date = session()->get('cart_checkout_date', []);
+//         $cart_adult = session()->get('cart_adult', []);
+//         $cart_children = session()->get('cart_children', []);
+
+//         if (empty($cart_room_id)) {
+//             return redirect()->route('cart')->with('error', 'Cart is empty.');
+//         }
+
+//         // 🔹 Calcul du total payé
+//         $total_price = 0;
+//         foreach ($cart_room_id as $i => $room_id) {
+//             $room = DB::table('rooms')->find($room_id);
+//             if (!$room) continue;
+
+//             $d1 = explode('/', $cart_checkin_date[$i]);
+//             $d2 = explode('/', $cart_checkout_date[$i]);
+//             $checkin = strtotime("$d1[2]-$d1[1]-$d1[0]");
+//             $checkout = strtotime("$d2[2]-$d2[1]-$d2[0]");
+//             $days = ($checkout - $checkin) / 86400;
+
+//             $total_price += $room->price * $days;
+//         }
+
+//         // 🔹 Création de la commande principale
+//         $order = new Order();
+//         $order->customer_id = Auth::guard('customer')->user()->id;
+//         $order->order_no = strtoupper(uniqid('ORD-'));
+//         $order->transaction_id = $captureId;
+//         $order->payment_method = 'PayPal';
+//         $order->paid_amount = $total_price;
+//         $order->booking_date = now();
+//         $order->status = 'completed';
+//         $order->save();
+
+//         // 🔹 Création des détails pour chaque chambre
+//         foreach ($cart_room_id as $i => $room_id) {
+//             $room = DB::table('rooms')->find($room_id);
+//             if (!$room) continue;
+
+//             $d1 = explode('/', $cart_checkin_date[$i]);
+//             $d2 = explode('/', $cart_checkout_date[$i]);
+//             $checkin = strtotime("$d1[2]-$d1[1]-$d1[0]");
+//             $checkout = strtotime("$d2[2]-$d2[1]-$d2[0]");
+//             $days = ($checkout - $checkin) / 86400;
+//             $subtotal = $room->price * $days;
+
+//             $detail = new OrderDetail();
+//             $detail->order_id = $order->id;
+//             $detail->room_id = $room_id;
+//             $detail->checkin_date = $cart_checkin_date[$i];
+//             $detail->checkout_date = $cart_checkout_date[$i];
+//             $detail->adult = $cart_adult[$i] ?? 1;
+//             $detail->children = $cart_children[$i] ?? 0;
+//             $detail->subtotal = $subtotal;
+//             $detail->save();
+//         }
+
+//         // 🔹 Préparer le mail
+//         $subject = 'New Order';
+//         $message = 'You have made an order for hotel booking. Booking details below: <br>';
+//         $message .= '<br>Order No: ' . $order->order_no;
+//         $message .= '<br>Transaction Id: ' . $captureId;
+//         $message .= '<br>Payment Method: PayPal';
+//         $message .= '<br>Paid Amount: $' . number_format($total_price, 2);
+//         $message .= '<br>Booking Date: ' . now();
+//         $message .= '<br><br><strong>Room Details:</strong><br>';
+
+//         foreach ($cart_room_id as $i => $room_id) {
+//             $room = DB::table('rooms')->find($room_id);
+//             if (!$room) continue;
+
+//             $d1 = explode('/', $cart_checkin_date[$i]);
+//             $d2 = explode('/', $cart_checkout_date[$i]);
+//             $checkin = strtotime("$d1[2]-$d1[1]-$d1[0]");
+//             $checkout = strtotime("$d2[2]-$d2[1]-$d2[0]");
+//             $days = ($checkout - $checkin) / 86400;
+//             $subtotal = $room->price * $days;
+
+//             $message .= '<br><b>Room:</b> ' . e($room->name);
+//             $message .= '<br>Price per night: $' . number_format($room->price, 2);
+//             $message .= '<br>Check-in: ' . $cart_checkin_date[$i];
+//             $message .= '<br>Check-out: ' . $cart_checkout_date[$i];
+//             $message .= '<br>Nights: ' . $days;
+//             $message .= '<br>Adults: ' . ($cart_adult[$i] ?? 1);
+//             $message .= '<br>Children: ' . ($cart_children[$i] ?? 0);
+//             $message .= '<br>Subtotal: $' . number_format($subtotal, 2) . '<br>';
+//         }
+
+//         // 🔹 Envoyer mail à l’admin et au client
+//         try {
+
+//             // 🔹 Envoi au site admin
+//              \Mail::to($admin_email)->send(new \App\Mail\Websitemail($subject, $message));
+
+//             // 🔹 Envoi au client
+//              $customer_email = session()->get('billing_email');
+//              if ($customer_email) {
+//                      \Mail::to($customer_email)->send(new \App\Mail\Websitemail($subject, $message));
+//              }
+//         } catch (\Exception $e) {
+//             \Log::error('Error sending mail: ' . $e->getMessage());
+//         }
+
+//         // 🔹 Vider le panier
+//         session()->forget([
+//             'cart_room_id',
+//             'cart_checkin_date',
+//             'cart_checkout_date',
+//             'cart_adult',
+//             'cart_children'
+//         ]);
+
+//         // 🔹 Vider les infos de facturation
+//         session()->forget([
+//             'billing_name',
+//             'billing_email',
+//             'billing_phone',
+//             'billing_country',
+//             'billing_address',
+//             'billing_state',
+//             'billing_city',
+//             'billing_zip'
+//         ]);
+
+//         // 🔹 Redirection vers page succès
+//         return redirect()->route('payment.success')
+//             ->with('success', 'Payment successfully confirmed.');
+
+//     } catch (\Exception $e) {
+//         return redirect()->route('payment.cancel')
+//             ->with('error', 'PayPal error: ' . $e->getMessage());
+//     }
+// }
+
+
+  public function paypal(Request $request)
 {
+    // 🔹 Récupération du capture_id envoyé depuis le frontend
     $captureId = $request->query('capture_id');
 
     if (!$captureId) {
         return redirect()->route('payment.cancel')
-            ->with('error', 'Aucun identifiant de paiement reçu.');
+            ->with('error', 'No payment identifier received.');
+    }
+
+    // 🔹 Vérification que le client est connecté
+    if (!Auth::guard('customer')->check()) {
+        return redirect()->route('cart')->with('error', 'Please login to continue.');
     }
 
     try {
-        // 🔹 On vérifie que l’utilisateur est connecté
-        if (!Auth::guard('customer')->check()) {
-            return redirect()->route('cart')->with('error', 'Veuillez vous connecter pour continuer.');
-        }
-
         // 🔹 Récupération du panier
         $cart_room_id = session()->get('cart_room_id', []);
         $cart_checkin_date = session()->get('cart_checkin_date', []);
@@ -158,13 +314,13 @@ class BookingController extends Controller
         $cart_children = session()->get('cart_children', []);
 
         if (empty($cart_room_id)) {
-            return redirect()->route('cart')->with('error', 'Panier vide.');
+            return redirect()->route('cart')->with('error', 'Cart is empty.');
         }
 
-        // 🔹 Calcul du total
+        // 🔹 Calcul du total payé
         $total_price = 0;
         foreach ($cart_room_id as $i => $room_id) {
-            $room = \DB::table('rooms')->find($room_id);
+            $room = DB::table('rooms')->find($room_id);
             if (!$room) continue;
 
             $d1 = explode('/', $cart_checkin_date[$i]);
@@ -172,11 +328,12 @@ class BookingController extends Controller
             $checkin = strtotime("$d1[2]-$d1[1]-$d1[0]");
             $checkout = strtotime("$d2[2]-$d2[1]-$d2[0]");
             $days = ($checkout - $checkin) / 86400;
+
             $total_price += $room->price * $days;
         }
 
-        // 🔹 Création de la commande (on considère le paiement comme déjà validé)
-        $order = new \App\Models\Order();
+        // 🔹 Création de la commande principale
+        $order = new Order();
         $order->customer_id = Auth::guard('customer')->user()->id;
         $order->order_no = strtoupper(uniqid('ORD-'));
         $order->transaction_id = $captureId;
@@ -186,11 +343,9 @@ class BookingController extends Controller
         $order->status = 'completed';
         $order->save();
 
-        $order_id = $order->id;
-
-        // 🔹 Détails
+        // 🔹 Création des détails pour chaque chambre
         foreach ($cart_room_id as $i => $room_id) {
-            $room = \DB::table('rooms')->find($room_id);
+            $room = DB::table('rooms')->find($room_id);
             if (!$room) continue;
 
             $d1 = explode('/', $cart_checkin_date[$i]);
@@ -200,8 +355,8 @@ class BookingController extends Controller
             $days = ($checkout - $checkin) / 86400;
             $subtotal = $room->price * $days;
 
-            $detail = new \App\Models\OrderDetail();
-            $detail->order_id = $order_id;
+            $detail = new OrderDetail();
+            $detail->order_id = $order->id;
             $detail->room_id = $room_id;
             $detail->checkin_date = $cart_checkin_date[$i];
             $detail->checkout_date = $cart_checkout_date[$i];
@@ -211,32 +366,92 @@ class BookingController extends Controller
             $detail->save();
         }
 
-        // 🔹 Nettoyage
-        session()->forget(['cart_room_id', 'cart_checkin_date', 'cart_checkout_date', 'cart_adult', 'cart_children']);
+        // 🔹 Préparer le mail
+        $subject = 'New Order';
+        $message = 'You have made an order for hotel booking. Booking details below: <br>';
+        $message .= '<br>Order No: ' . $order->order_no;
+        $message .= '<br>Transaction Id: ' . $captureId;
+        $message .= '<br>Payment Method: PayPal';
+        $message .= '<br>Paid Amount: $' . number_format($total_price, 2);
+        $message .= '<br>Booking Date: ' . now();
+        $message .= '<br><br><strong>Room Details:</strong><br>';
 
-        
-         session()->forget([
+        foreach ($cart_room_id as $i => $room_id) {
+            $room = DB::table('rooms')->find($room_id);
+            if (!$room) continue;
+
+            $d1 = explode('/', $cart_checkin_date[$i]);
+            $d2 = explode('/', $cart_checkout_date[$i]);
+            $checkin = strtotime("$d1[2]-$d1[1]-$d1[0]");
+            $checkout = strtotime("$d2[2]-$d2[1]-$d2[0]");
+            $days = ($checkout - $checkin) / 86400;
+            $subtotal = $room->price * $days;
+
+            $message .= '<br><b>Room:</b> ' . e($room->name);
+            $message .= '<br>Price per night: $' . number_format($room->price, 2);
+            $message .= '<br>Check-in: ' . $cart_checkin_date[$i];
+            $message .= '<br>Check-out: ' . $cart_checkout_date[$i];
+            $message .= '<br>Nights: ' . $days;
+            $message .= '<br>Adults: ' . ($cart_adult[$i] ?? 1);
+            $message .= '<br>Children: ' . ($cart_children[$i] ?? 0);
+            $message .= '<br>Subtotal: $' . number_format($subtotal, 2) . '<br>';
+        }
+
+        // 🔹 Récupérer l'email client depuis le guard pour fiabilité
+        // $customer_email = Auth::guard('customer')->user()->email;
+
+        // 🔹 Envoyer mail à l’admin et au client
+        try {
+            // Admin email (à configurer dans .env ou hardcoder)
+            // $admin_email = 'admin@example.com';
+            // \Mail::to($admin_email)->send(new Websitemail($subject, $message));
+
+            // Client email
+              // Récupérer l'email client depuis le guard
+              $customer_email = Auth::guard('customer')->user()->email;
+
+            // Envoi du mail au client
+            \Mail::to($customer_email)->send(new Websitemail($subject, $message));
+
+            \Log::info("Mail successfully sent to customer ($customer_email)");
+        } catch (\Exception $e) {
+            \Log::error('Error sending mail: ' . $e->getMessage());
+        }
+
+        // 🔹 Vider le panier
+        session()->forget([
+            'cart_room_id',
+            'cart_checkin_date',
+            'cart_checkout_date',
+            'cart_adult',
+            'cart_children'
+        ]);
+
+        // 🔹 Vider les infos de facturation
+        session()->forget([
             'billing_name',
             'billing_email',
             'billing_phone',
             'billing_country',
             'billing_address',
             'billing_state',
-             'billing_city',
+            'billing_city',
             'billing_zip'
         ]);
 
-        
-        
-        // 🔹 Redirection
+        // 🔹 Redirection vers page succès
         return redirect()->route('payment.success')
-            ->with('success', 'Paiement confirmé avec succès !');
+            ->with('success', 'Payment successfully confirmed.');
 
     } catch (\Exception $e) {
         return redirect()->route('payment.cancel')
-            ->with('error', 'Erreur : ' . $e->getMessage());
+            ->with('error', 'PayPal error: ' . $e->getMessage());
     }
 }
+
+
+
+
 
 
 
