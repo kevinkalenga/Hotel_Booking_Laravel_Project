@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers\Front;
 use App\Models\Customer;
+use App\Models\Order;
+use App\Models\OrderDetail;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Auth;
+use Illuminate\Support\Facades\DB; 
 use PayPalCheckoutSdk\Core\PayPalHttpClient;
 use PayPalCheckoutSdk\Core\SandboxEnvironment;
 use PayPalCheckoutSdk\Core\ProductionEnvironment;
 use PayPalCheckoutSdk\Orders\OrdersGetRequest;
+use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 
 class BookingController extends Controller
 {
@@ -128,77 +132,126 @@ class BookingController extends Controller
 
 
 
-    // public function paypal(Request $request)
-    // {
-    //     $orderID = $request->query('order_id');
-
-    //     // Charger les credentials depuis config/services.php
-    //     $clientId = config('services.paypal.client_id');
-    //     $clientSecret = config('services.paypal.client_secret');
-    //     $mode = config('services.paypal.mode', 'sandbox');
-
-    //     // Initialiser l'environnement PayPal
-    //     $environment = $mode === 'sandbox' 
-    //         ? new SandboxEnvironment($clientId, $clientSecret)
-    //         : new ProductionEnvironment($clientId, $clientSecret);
-
-    //     $client = new PayPalHttpClient($environment);
-
-    //     try {
-    //         // Vérifier l'ordre PayPal
-    //         $requestOrder = new OrdersGetRequest($orderID);
-    //         $response = $client->execute($requestOrder);
-    //         $order = $response->result;
-
-    //         if ($order->status === 'COMPLETED') {
-    //             // ✅ Paiement validé, ici tu peux enregistrer la réservation
-    //             // Exemple : Booking::create([...]);
-
-    //             return redirect()->route('thankyou.page')
-    //                 ->with('success', 'Payment successful!');
-    //         } else {
-    //             return redirect()->back()
-    //                 ->with('error', 'Payment not completed.');
-    //         }
-    //     } catch (\Exception $e) {
-    //         return redirect()->back()
-    //             ->with('error', 'PayPal verification failed: ' . $e->getMessage());
-    //     }
-    // }
+  
 
 
-public function paypal(Request $request)
+     public function paypal(Request $request)
 {
-    $orderID = $request->query('order_id');
+    $captureId = $request->query('capture_id');
 
-    $clientId = config('services.paypal.client_id');
-    $clientSecret = config('services.paypal.client_secret');
-    $mode = config('services.paypal.mode', 'sandbox');
-
-    $environment = $mode === 'sandbox'
-        ? new SandboxEnvironment($clientId, $clientSecret)
-        : new ProductionEnvironment($clientId, $clientSecret);
-
-    $client = new PayPalHttpClient($environment);
+    if (!$captureId) {
+        return redirect()->route('payment.cancel')
+            ->with('error', 'Aucun identifiant de paiement reçu.');
+    }
 
     try {
-        $requestOrder = new OrdersGetRequest($orderID);
-        $response = $client->execute($requestOrder);
-        $order = $response->result;
-
-        if ($order->status === 'COMPLETED') {
-            // ✅ Paiement validé : tu peux sauvegarder la commande ici
-            return redirect()->route('payment.success')
-                ->with('success', 'Paiement confirmé ! Merci pour votre réservation.');
-        } else {
-            return redirect()->route('payment.cancel')
-                ->with('error', 'Le paiement n’a pas été complété.');
+        // 🔹 On vérifie que l’utilisateur est connecté
+        if (!Auth::guard('customer')->check()) {
+            return redirect()->route('cart')->with('error', 'Veuillez vous connecter pour continuer.');
         }
+
+        // 🔹 Récupération du panier
+        $cart_room_id = session()->get('cart_room_id', []);
+        $cart_checkin_date = session()->get('cart_checkin_date', []);
+        $cart_checkout_date = session()->get('cart_checkout_date', []);
+        $cart_adult = session()->get('cart_adult', []);
+        $cart_children = session()->get('cart_children', []);
+
+        if (empty($cart_room_id)) {
+            return redirect()->route('cart')->with('error', 'Panier vide.');
+        }
+
+        // 🔹 Calcul du total
+        $total_price = 0;
+        foreach ($cart_room_id as $i => $room_id) {
+            $room = \DB::table('rooms')->find($room_id);
+            if (!$room) continue;
+
+            $d1 = explode('/', $cart_checkin_date[$i]);
+            $d2 = explode('/', $cart_checkout_date[$i]);
+            $checkin = strtotime("$d1[2]-$d1[1]-$d1[0]");
+            $checkout = strtotime("$d2[2]-$d2[1]-$d2[0]");
+            $days = ($checkout - $checkin) / 86400;
+            $total_price += $room->price * $days;
+        }
+
+        // 🔹 Création de la commande (on considère le paiement comme déjà validé)
+        $order = new \App\Models\Order();
+        $order->customer_id = Auth::guard('customer')->user()->id;
+        $order->order_no = strtoupper(uniqid('ORD-'));
+        $order->transaction_id = $captureId;
+        $order->payment_method = 'PayPal';
+        $order->paid_amount = $total_price;
+        $order->booking_date = now();
+        $order->status = 'completed';
+        $order->save();
+
+        $order_id = $order->id;
+
+        // 🔹 Détails
+        foreach ($cart_room_id as $i => $room_id) {
+            $room = \DB::table('rooms')->find($room_id);
+            if (!$room) continue;
+
+            $d1 = explode('/', $cart_checkin_date[$i]);
+            $d2 = explode('/', $cart_checkout_date[$i]);
+            $checkin = strtotime("$d1[2]-$d1[1]-$d1[0]");
+            $checkout = strtotime("$d2[2]-$d2[1]-$d2[0]");
+            $days = ($checkout - $checkin) / 86400;
+            $subtotal = $room->price * $days;
+
+            $detail = new \App\Models\OrderDetail();
+            $detail->order_id = $order_id;
+            $detail->room_id = $room_id;
+            $detail->checkin_date = $cart_checkin_date[$i];
+            $detail->checkout_date = $cart_checkout_date[$i];
+            $detail->adult = $cart_adult[$i] ?? 1;
+            $detail->children = $cart_children[$i] ?? 0;
+            $detail->subtotal = $subtotal;
+            $detail->save();
+        }
+
+        // 🔹 Nettoyage
+        session()->forget(['cart_room_id', 'cart_checkin_date', 'cart_checkout_date', 'cart_adult', 'cart_children']);
+
+        
+         session()->forget([
+            'billing_name',
+            'billing_email',
+            'billing_phone',
+            'billing_country',
+            'billing_address',
+            'billing_state',
+             'billing_city',
+            'billing_zip'
+        ]);
+
+        
+        
+        // 🔹 Redirection
+        return redirect()->route('payment.success')
+            ->with('success', 'Paiement confirmé avec succès !');
+
     } catch (\Exception $e) {
         return redirect()->route('payment.cancel')
-            ->with('error', 'Erreur PayPal : ' . $e->getMessage());
+            ->with('error', 'Erreur : ' . $e->getMessage());
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 public function paymentSuccess()
 {

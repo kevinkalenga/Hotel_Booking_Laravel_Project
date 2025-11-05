@@ -62,15 +62,62 @@ class CustomerAuthController extends Controller
       
       $customer_data = Customer::where('email', $email)->where('token', $token)->first();
 
-      if($customer_data) {
-         $customer_data->token = "";
-         $customer_data->status = 1;
-         $customer_data->update();
+        if ($customer_data) {
+           $customer_data->token = "";
+           $customer_data->status = 1;
+           $customer_data->update();
+        
+            // Déconnexion sécurité
+            Auth::guard('customer')->logout();
 
-          return redirect()->route('customer_login')->with('success', 'Your account is verified successfully!');
-      } else {
-          return redirect()->route('customer_login');
-      }
+            // Connexion du nouveau client
+            Auth::guard('customer')->loginUsingId($customer_data->id);
+
+
+            // Vider le panier et billing de l'ancien
+           session()->forget([
+            'cart_room_id',
+            'cart_checkin_date',
+            'cart_checkout_date',
+            'cart_adult',
+            'cart_children',
+            'billing_name',
+            'billing_email',
+            'billing_phone',
+            'billing_country',
+            'billing_address',
+            'billing_state',
+            'billing_city',
+            'billing_zip'
+           ]);
+            
+            return redirect()->route('checkout')
+            ->with('success', 'Your account is verified and you are now logged in!');
+        
+        }
+
+
+        return redirect()->route('customer_login')->with('error', 'Invalid verification link.');
+
+    //   if($customer_data) {
+    //      $customer_data->token = "";
+    //      $customer_data->status = 1;
+    //      $customer_data->update();
+
+    //     // Déconnexion sécurité
+    //     Auth::guard('customer')->logout();
+
+    //     // Connecte le client vérifié
+    //     Auth::guard('customer')->loginUsingId($customer_data->id);
+
+    //       return redirect()->route('customer_login')->with('success', 'Your account is verified successfully!');
+    //   } else {
+    //       return redirect()->route('customer_login');
+    //   }
+    
+    
+    
+    
     }
     
     

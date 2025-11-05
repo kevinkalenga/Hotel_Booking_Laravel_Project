@@ -3,8 +3,8 @@
 
 @section('main_content')
 <div class="container mt-5 text-center">
-    <h1 class="text-danger">❌ Paiement annulé</h1>
-    <p>Le paiement a été annulé ou a échoué.</p>
-    <a href="{{ route('checkout') }}" class="btn btn-secondary mt-3">Réessayer</a>
+    <h1 class="text-danger">❌ Payment cancelled</h1>
+    <p>The payment was cancelled or failed.</p>
+    <a href="{{ route('checkout') }}" class="btn btn-secondary my-3">Try again</a>
 </div>
 @endsection
