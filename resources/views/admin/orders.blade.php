@@ -33,6 +33,7 @@
                                                     <td class="pt_10 pb_10">
                                                         
                                                         <a href="{{route('admin_invoice', $row->id)}}" class="btn btn-primary"><i class="fa fa-edit"></i></a>
+                                                        <a href="{{route('admin_order_delete', $row->id)}}" class="btn btn-danger" onClick="return confirm('Are you sure?');"><i class="fa fa-trash"></i></a>
         
                                                     </td>
                                                    

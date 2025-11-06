@@ -25,4 +25,13 @@ class AdminOrderController extends Controller
         //  $customer_data = Customer::where('id', $orders->customer_id)->first();
         return view('admin.invoice', compact('order', 'order_detail'));
     }
+    public function delete($id)
+    {
+       $obj = Order::where('id', $id)->first();
+       $obj->delete();
+       
+       $obj = OrderDetail::where('order_id', $id)->delete();
+
+       return redirect()->back()->with('success', 'Order is deleted successfully');
+    }
 }
