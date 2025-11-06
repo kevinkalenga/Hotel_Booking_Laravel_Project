@@ -107,7 +107,7 @@ Route::group(['middleware' =>['customer:customer']], function(){
      Route::get('/customer/edit-profile', [CustomerProfileController::class, 'index'])->name('customer_profile');
      Route::post('/customer/edit-profile-submit', [CustomerProfileController::class, 'profile_submit'])->name('customer_profile_submit');
      Route::get('/customer/order/view', [CustomerOrderController::class, 'index'])->name('customer_order_view');
-     Route::get('/customer/order/detail', [CustomerOrderController::class, 'detail'])->name('customer_order_detail');
+     Route::get('/customer/invoice/{id}', [CustomerOrderController::class, 'invoice'])->name('customer_invoice');
 });
 
 // Admin - Middleware
