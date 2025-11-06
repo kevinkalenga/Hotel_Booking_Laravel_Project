@@ -358,16 +358,35 @@ public function stripeCreateIntent(Request $request)
 public function stripeSuccess(Request $request)
 {
     $paymentIntentId = $request->query('payment_intent');
-
+    
+    
     if (!$paymentIntentId) {
         return redirect()->route('payment.cancel')->with('error', 'No payment found.');
     }
 
+     // Configure Stripe
     Stripe::setApiKey(config('services.stripe.secret'));
-    $paymentIntent = PaymentIntent::retrieve($paymentIntentId);
 
-    if ($paymentIntent->status !== 'succeeded') {
+    // Récupère le PaymentIntent depuis Stripe
+    $paymentIntent = \Stripe\PaymentIntent::retrieve($paymentIntentId);
+
+      if ($paymentIntent->status !== 'succeeded') {
         return redirect()->route('payment.cancel')->with('error', 'Payment failed.');
+      }
+
+    // ✅ Récupération des informations de carte via la charge associée
+    $cardLast4 = null;
+    $cardBrand = null;
+
+    
+    if (isset($paymentIntent->latest_charge)) {
+        $latestCharge = \Stripe\Charge::retrieve($paymentIntent->latest_charge);
+
+        if (isset($latestCharge->payment_method_details->card)) {
+            $card = $latestCharge->payment_method_details->card;
+            $cardLast4 = $card->last4 ?? null;
+            $cardBrand = $card->brand ?? null;
+        }
     }
 
     // --- 🔹 Même logique que PayPal ---
@@ -395,6 +414,7 @@ public function stripeSuccess(Request $request)
     $order->order_no = strtoupper(uniqid('ORD-'));
     $order->transaction_id = $paymentIntent->id;
     $order->payment_method = 'Stripe';
+    $order->card_last_digit = $cardLast4;
     $order->paid_amount = $total_price;
     $order->booking_date = now();
     $order->status = 'completed';
