@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminHomeController;
+use App\Http\Controllers\Admin\AdminCustomerController;
 use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\Admin\AdminProfilController;
 use App\Http\Controllers\Admin\AdminSlideController;
@@ -120,6 +121,8 @@ Route::group(['middleware' => 'admin'], function(){
 
    // Dashboard
    Route::get('/admin/home', [AdminHomeController::class, 'index'])->name('admin_home');
+   Route::get('/admin/customers', [AdminCustomerController::class, 'index'])->name('admin_customer');
+   Route::get('/admin/customer/change-status/{id}', [AdminCustomerController::class, 'change_status'])->name('admin_customer_change_status');
 
    // Slide
    Route::get('/admin/slide/view', [AdminSlideController::class, 'index'])->name('admin_slide_view');
