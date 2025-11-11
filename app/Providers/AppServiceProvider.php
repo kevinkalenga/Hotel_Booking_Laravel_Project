@@ -21,11 +21,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        paginator::useBootstrap();
-
+        Paginator::useBootstrap();
+         
+         // Optional: load shared data
         $page_data = Page::where('id', 1)->first();
         $room_data = Room::get();
-
+        
+         // Share data globally with all views
         view()->share('global_page_data', $page_data);
         view()->share('global_room_data', $room_data);
     }

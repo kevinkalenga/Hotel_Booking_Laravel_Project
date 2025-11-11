@@ -9,7 +9,7 @@ class PhotoController extends Controller
 {
     public function index()
     {
-          $photo_all = Photo::paginate(10); //Limiter le nombre de postes
+          $photo_all = Photo::paginate(4); //Limiter le nombre de postes
           return view('front.photo_gallery', compact('photo_all'));
     }
 }

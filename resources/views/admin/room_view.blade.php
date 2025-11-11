@@ -90,16 +90,11 @@
                                                                     <div class="col-md-4"><label class="form-label">Total Amenities</label></div>
                                                                     <div class="col-md-8">
                                                                         @php 
-                                                                          $arr = explode(',', $row->amenities);
-                                                                             // echo '<pre>';
-                                                                             // print_r($arr);
-                                                                             // echo '</pre>';
-                                                                              for ($j = 0; $j < count($arr); $j++) {
-                                                                                   //echo $arr[$j] . '<br>';
-                                                                                  $temp_row = \App\Models\Amenity::where('id', $arr[$j])->first();
+                                                                           $arr = explode(',', $row->amenities);
+                                                                            foreach ($arr as $amenity) {
+                                                                                echo trim($amenity) . '<br>';
+                                                                            }
 
-                                                                                  echo $temp_row->name.'<br>';
-                                                                               }
                                                                         @endphp
                                                                     </div>
                                                                 </div>

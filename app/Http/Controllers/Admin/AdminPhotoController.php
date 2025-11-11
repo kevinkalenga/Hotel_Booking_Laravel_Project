@@ -10,6 +10,7 @@ class AdminPhotoController extends Controller
 {
     public function index()
     {
+        // $photos = Photo::get();
         $photos = Photo::get();
         return view('admin.photo_view', compact('photos'));
     }

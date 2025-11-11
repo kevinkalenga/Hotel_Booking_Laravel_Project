@@ -31,6 +31,11 @@ class BookingController extends Controller
         $checkin_date = $dates[0];
         $checkout_date = $dates[1];
 
+           // Vérification disponibilité avant d’ajouter au panier(test)
+       if (!$this->isRoomAvailable($request->room_id, $checkin_date, $checkout_date)) {
+          return redirect()->back()->with('error', 'This room is not available for the selected dates.');
+        }
+
         session()->push('cart_room_id', $request->room_id);
         session()->push('cart_checkin_date', $checkin_date);
         session()->push('cart_checkout_date', $checkout_date);
@@ -198,6 +203,13 @@ class BookingController extends Controller
             $days = ($checkout - $checkin) / 86400;
 
             $total_price += $room->price * $days;
+        }
+
+        // test
+        foreach ($cart_room_id as $i => $room_id) {
+          if (!$this->isRoomAvailable($room_id, $cart_checkin_date[$i], $cart_checkout_date[$i])) {
+            return redirect()->route('cart')->with('error', 'One of the selected rooms is no longer available.');
+          }
         }
 
         // 🔹 Création de la commande principale
@@ -409,6 +421,13 @@ public function stripeSuccess(Request $request)
         $total_price += $room->price * $days;
     }
 
+    // test
+    foreach ($cart_room_id as $i => $room_id) {
+       if (!$this->isRoomAvailable($room_id, $cart_checkin_date[$i], $cart_checkout_date[$i])) {
+        return redirect()->route('cart')->with('error', 'One of the selected rooms is no longer available.');
+      }
+    }
+
     $order = new Order();
     $order->customer_id = Auth::guard('customer')->user()->id;
     $order->order_no = strtoupper(uniqid('ORD-'));
@@ -492,6 +511,33 @@ private function calculateTotal()
     }
 
     return $total_price;
+}
+
+// test
+private function isRoomAvailable($room_id, $checkin_date, $checkout_date)
+{
+    // ⚠️ Convertir les dates en format Y-m-d
+    $d1 = explode('/', $checkin_date);
+    $d2 = explode('/', $checkout_date);
+    $checkin = date('Y-m-d', strtotime("$d1[2]-$d1[1]-$d1[0]"));
+    $checkout = date('Y-m-d', strtotime("$d2[2]-$d2[1]-$d2[0]"));
+
+    // Vérifier s’il existe un chevauchement avec une autre réservation
+    $exists = DB::table('order_details')
+        ->join('orders', 'order_details.order_id', '=', 'orders.id')
+        ->where('order_details.room_id', $room_id)
+        ->where('orders.status', 'completed') // uniquement les réservations confirmées
+        ->where(function ($q) use ($checkin, $checkout) {
+            $q->whereBetween('order_details.checkin_date', [$checkin, $checkout])
+              ->orWhereBetween('order_details.checkout_date', [$checkin, $checkout])
+              ->orWhere(function ($q2) use ($checkin, $checkout) {
+                  $q2->where('order_details.checkin_date', '<=', $checkin)
+                     ->where('order_details.checkout_date', '>=', $checkout);
+              });
+        })
+        ->exists();
+
+    return !$exists; // true si libre, false si déjà réservé
 }
 
 
